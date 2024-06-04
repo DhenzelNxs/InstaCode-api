@@ -9,7 +9,8 @@ def create_post():
     new_post = Post(
         image=data['image'],
         nickname=data['nickname'],
-        email=data['email']
+        email=data['email'],
+        description=data['description']
     )
     db.session.add(new_post)
     db.session.commit()
@@ -36,6 +37,7 @@ def get_posts():
             'image': post.image,
             'nickname': post.nickname,
             'email': post.email,
+            'description': post.description,
             'comments': [{'nickname': comment.nickname, 'comment': comment.comment} for comment in post.comments]
         }
         output.append(post_data)
@@ -53,6 +55,7 @@ def get_post(post_id):
             'image': post.image,
             'nickname': post.nickname,
             'email': post.email,
+            'description': post.description,
             'comments': [{'nickname': comment.nickname, 'comment': comment.comment} for comment in post.comments]
         }
         output.append(post_data)

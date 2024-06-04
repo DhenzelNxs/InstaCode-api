@@ -7,6 +7,7 @@ class Post(db.Model):
     image = db.Column(db.String(120), nullable=False)
     nickname = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(120), nullable=False)
+    description = db.Column(db.String(120), nullable=False)
     comments = db.relationship('Comment', backref='post', lazy=True)
 
 class Comment(db.Model):
