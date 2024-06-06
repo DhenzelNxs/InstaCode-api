@@ -91,7 +91,7 @@ def create_user():
 
     return jsonify({'message': 'User created successfully!'}), 201
 
-@api.route('/users/getposts/<nickname>', methods=['GET'])
+@api.route('/users/getposts/<string:nickname>', methods=['GET'])
 def create_user(nickname):
     posts = Post.query.all()
     output = []
