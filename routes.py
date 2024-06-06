@@ -91,6 +91,25 @@ def create_user():
 
     return jsonify({'message': 'User created successfully!'}), 201
 
+@api.route('/users/getposts/<nickname>', methods=['GET'])
+def create_user(nickname):
+    posts = Post.query.all()
+    output = []
+
+    for post in posts:
+        if nickname == post.nickname:
+            post_data = {
+                'id': post.id,
+                'image': post.image,
+                'nickname': post.nickname,
+                'email': post.email,
+                'description': post.description,
+                'comments': [{'nickname': comment.nickname, 'comment': comment.comment} for comment in post.comments]
+            }
+            output.append(post_data)
+
+    return jsonify({'posts': output})
+
 @api.route('/posts/patchpost/<int:post_id>', methods=['PATCH'])
 def patch_post(post_id):
     post = Post.query.get_or_404(post_id)
