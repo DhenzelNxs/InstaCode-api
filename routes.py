@@ -131,6 +131,21 @@ def patch_post(post_id):
     db.session.commit()
     return jsonify({'message': 'Post updated successfully'})
 
+@api.route('/update_profile_image/<int:user_id>', methods=['PATCH'])
+def update_profile_image(user_id):
+    data = request.get_json()
+    new_profile_image = data.get('profile_image')
+    
+    user = Users.query.get(user_id)
+    if user is None:
+        return jsonify({"error": "User not found"}), 404
+    
+    if new_profile_image:
+        user.profile_image = new_profile_image
+        db.session.commit()
+        return jsonify({"message": "Profile image updated successfully"}), 200
+    else:
+        return jsonify({"error": "Invalid data"}), 400
     
 
     
