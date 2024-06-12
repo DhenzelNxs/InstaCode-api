@@ -72,7 +72,8 @@ def get_users():
             'id': user.id,
             'name': user.name,
             'email': user.email,
-            'password': user.password
+            'password': user.password,
+            'profile_image': user.profile_image
         }
         output.append(user_data)
 
@@ -85,6 +86,7 @@ def create_user():
         name=data['name'],
         email=data['email'],
         password=data['password'],
+        profile_image=data['profile_image'],
     )
     db.session.add(new_user)
     db.session.commit()
