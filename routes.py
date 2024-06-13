@@ -8,6 +8,7 @@ def create_post():
     data = request.json
     new_post = Post(
         image=data['image'],
+        likes=data['likes'],
         nickname=data['nickname'],
         email=data['email'],
         description=data['description']
@@ -35,6 +36,7 @@ def get_posts():
         post_data = {
             'id': post.id,
             'image': post.image,
+            'likes': post.likes,
             'nickname': post.nickname,
             'email': post.email,
             'description': post.description,
@@ -53,6 +55,7 @@ def get_post(post_id):
         post_data = {
             'id': post.id,
             'image': post.image,
+            'likes': post.likes,
             'nickname': post.nickname,
             'email': post.email,
             'description': post.description,
@@ -103,6 +106,7 @@ def search_user_posts(nickname):
             post_data = {
                 'id': post.id,
                 'image': post.image,
+                'likes': post.likes,
                 'nickname': post.nickname,
                 'email': post.email,
                 'description': post.description,
@@ -147,5 +151,17 @@ def update_profile_image(user_id):
     else:
         return jsonify({"error": "Invalid data"}), 400
     
+@api.route('/posts/<int:post_id>/like', methods=['PATCH'])
+def like_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    post.likes += 1
+    db.session.commit()
+    return jsonify({"id": post.id, "likes": post.likes})
 
+@api.route('/posts/<int:post_id>/deslike', methods=['PATCH'])
+def deslike_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    post.likes -= 1
+    db.session.commit()
+    return jsonify({"id": post.id, "likes": post.likes})
     

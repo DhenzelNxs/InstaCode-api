@@ -5,6 +5,7 @@ db = SQLAlchemy()
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     image = db.Column(db.String(120), nullable=False)
+    likes = db.Column(db.Integer, default=0)
     nickname = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(120), nullable=False)
     description = db.Column(db.String(120), nullable=False)
