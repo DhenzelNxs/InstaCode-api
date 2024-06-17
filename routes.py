@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import db, Post, Comment, Users
+from models import db, Post, Comment, Users, Likes
 
 api = Blueprint('api', __name__)
 
@@ -23,6 +23,13 @@ def create_post():
             post_id=new_post.id
         )
         db.session.add(new_comment)
+
+    for likeduser in data.get('liked_by', []):
+        new_like_user = Likes(
+            nickname=likeduser['nickname'],
+            post_id=new_post.id
+        )
+        db.session.add(new_like_user)
     
     db.session.commit()
     return jsonify({'message': 'Post created successfully!'}), 201
@@ -40,7 +47,8 @@ def get_posts():
             'nickname': post.nickname,
             'email': post.email,
             'description': post.description,
-            'comments': [{'nickname': comment.nickname, 'comment': comment.comment} for comment in post.comments]
+            'comments': [{'nickname': comment.nickname, 'comment': comment.comment} for comment in post.comments],
+            'liked_by': [{'nickname': liked_by.nickname, 'post_id': liked_by.post_id} for liked_by in post.liked_by]
         }
         output.append(post_data)
 
@@ -150,18 +158,27 @@ def update_profile_image(user_id):
         return jsonify({"message": "Profile image updated successfully"}), 200
     else:
         return jsonify({"error": "Invalid data"}), 400
-    
-@api.route('/posts/<int:post_id>/like', methods=['PATCH'])
-def like_post(post_id):
-    post = Post.query.get_or_404(post_id)
-    post.likes += 1
-    db.session.commit()
-    return jsonify({"id": post.id, "likes": post.likes})
 
-@api.route('/posts/<int:post_id>/deslike', methods=['PATCH'])
-def deslike_post(post_id):
+@api.route('/posts/likeaction/<int:post_id>/<string:action>', methods=['PATCH'])
+def like_post(post_id, action):
     post = Post.query.get_or_404(post_id)
-    post.likes -= 1
-    db.session.commit()
-    return jsonify({"id": post.id, "likes": post.likes})
+    data = request.json
+    if action == "like":
+        post.likes += 1
+        new_user_liked = Likes(
+            nickname=data['nickname'],
+            post_id=data['post_id']
+        )
+        db.session.add(new_user_liked)
+        db.session.commit()
+    elif action == "deslike":
+        post.likes -= 1
+        Likes.query.filter_by(nickname=data['nickname']).delete()
+        db.session.commit()
+    
+    liked_users = Likes.query.filter_by(post_id=post_id).all()
+    liked_usernames = [user.nickname for user in liked_users]
+
+
+    return jsonify({"action": f"{action}", "liked_users": liked_usernames})
     

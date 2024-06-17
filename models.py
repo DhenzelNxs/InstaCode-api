@@ -10,6 +10,13 @@ class Post(db.Model):
     email = db.Column(db.String(120), nullable=False)
     description = db.Column(db.String(120), nullable=False)
     comments = db.relationship('Comment', backref='post', lazy=True)
+    liked_by = db.relationship('Likes', backref='post', lazy=True)
+
+class Likes(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nickname = db.Column(db.String(50), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
