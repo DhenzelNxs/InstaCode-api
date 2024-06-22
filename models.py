@@ -8,6 +8,7 @@ class Post(db.Model):
     likes = db.Column(db.Integer, default=0)
     nickname = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(120), nullable=False)
+    media_type = db.Column(db.String(120), nullable=False)
     description = db.Column(db.String(120), nullable=False)
     comments = db.relationship('Comment', backref='post', lazy=True)
     liked_by = db.relationship('Likes', backref='post', lazy=True)

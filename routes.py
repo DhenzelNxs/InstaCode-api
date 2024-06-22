@@ -11,7 +11,8 @@ def create_post():
         likes=data['likes'],
         nickname=data['nickname'],
         email=data['email'],
-        description=data['description']
+        description=data['description'],
+        media_type=data['media_type']
     )
     db.session.add(new_post)
     db.session.commit()
@@ -46,6 +47,7 @@ def get_posts():
             'likes': post.likes,
             'nickname': post.nickname,
             'email': post.email,
+            'media_type': post.media_type,
             'description': post.description,
             'comments': [{'nickname': comment.nickname, 'comment': comment.comment} for comment in post.comments],
             'liked_by': [{'nickname': liked_by.nickname, 'post_id': liked_by.post_id} for liked_by in post.liked_by]
@@ -66,6 +68,7 @@ def get_post(post_id):
             'likes': post.likes,
             'nickname': post.nickname,
             'email': post.email,
+            'media_type': post.media_type,
             'description': post.description,
             'comments': [{'nickname': comment.nickname, 'comment': comment.comment} for comment in post.comments]
         }
@@ -117,6 +120,7 @@ def search_user_posts(nickname):
                 'likes': post.likes,
                 'nickname': post.nickname,
                 'email': post.email,
+                'media_type': post.media_type,
                 'description': post.description,
                 'comments': [{'nickname': comment.nickname, 'comment': comment.comment} for comment in post.comments]
             }
