@@ -186,16 +186,20 @@ def like_post(post_id, action):
 
     return jsonify({"action": f"{action}", "liked_users": liked_usernames})
 
-@api.route('/comments/<int:postId>', methods=['GET'])
-def get_comments(postId):
-    comments =  Comment.query.all()
-    output = []
-    for comment in comments:
-        if comment.post_id == postId:
-            comment_data = {
-                'comment': comment.comment,
-                'nickname': comment.nickname
-            }
-        output.append(comment_data)
-
-    return jsonify({"comments": output})
+@api.route('/comments/<int:post_id>', methods=['GET'])
+def get_comments(post_id):
+    # Consulta para obter todos os comentários de um determinado post
+    comments = Comment.query.filter_by(post_id=post_id).all()
+    
+    # Converta os comentários para uma lista de dicionários
+    comments_list = [
+        {
+            'id': comment.id,
+            'nickname': comment.nickname,
+            'comment': comment.comment,
+            'post_id': comment.post_id
+        }
+        for comment in comments
+    ]
+    
+    return jsonify(comments_list)
